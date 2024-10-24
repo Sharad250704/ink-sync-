@@ -9,8 +9,6 @@ A Real-Time Collaborative Whiteboard Web App built with NextJs.
 * Own file extension .ink Save the drawing files locally on your device.
 
 ---
-## ScreenShots
-![image](https://github.com/himanshu8443/InkSync/assets/99420590/4971f9c1-5c19-436a-af31-664ecda2084d)
 
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
@@ -19,7 +17,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 1. Clone the repository to your local machine.
     ```sh
-    git clone https://github.com/himanshu8443/InkSync.git
+    git clone https://github.com/Sharad250704/ink-sync-.git
     ```
     
 2. Install the required packages.
