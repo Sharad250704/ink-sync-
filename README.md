@@ -1,5 +1,3 @@
-   [![Project Banner](https://github.com/himanshu8443/InkSync/assets/99420590/0e79c4b5-a834-4235-a741-67ca97e02abd)](http://inksync.cloud/)
-
    
 A Real-Time Collaborative Whiteboard Web App built with NextJs.
 ---
