@@ -18,23 +18,25 @@ export default function Home({ params }) {
   const [isLive, setIsLive] = useState(false);
   const [messages, setMessages] = useState([]);
 
-  // Use your Render backend URL
   const server = process.env.NEXT_PUBLIC_SERVER_URL;
 
   const connectionOptions = {
-    "force new connection": true,
-    reconnectionAttempts: "Infinity",
+    forceNewConnection: true,
+    reconnectionAttempts: Infinity,
     timeout: 10000,
     transports: ["websocket"],
   };
 
   useEffect(() => {
-    setUserName(localStorage.getItem("userName") || "Anonymous");
+    const currentUser = localStorage.getItem("userName") || "Anonymous";
+    setUserName(currentUser);
+
     if (params?.roomId?.toString().length !== 20) {
       setIsLive(false);
       return;
     }
     setIsLive(true);
+
     const socket = io(server, connectionOptions);
     setSocket(socket);
 
@@ -47,46 +49,42 @@ export default function Home({ params }) {
       setMessages((messages) => [...messages, message]);
     });
 
-    // ping server every 2 min to prevent Render server from sleeping
     socket.on("ping", () => {
       setTimeout(() => {
         socket.emit("pong");
       }, 120000);
     });
 
-    const data = {
-      roomId: params.roomId,
-      userName: userName,
-    };
-    socket.emit("joinRoom", data);
+    // emit joinRoom with currentUser
+    socket.emit("joinRoom", { roomId: params.roomId, userName: currentUser });
 
     return () => {
       socket.off("updateCanvas");
+      socket.off("getMessage");
+      socket.disconnect();
     };
-  }, []);
+  }, [params?.roomId, server]);
 
   const sendMessage = (message) => {
+    if (!socket) return;
     const data = {
       message: message,
       userName: userName,
       roomId: params.roomId,
       socketId: socket.id,
     };
-    if (socket) {
-      socket.emit("sendMessage", data);
-    }
+    socket.emit("sendMessage", data);
   };
 
   const updateCanvas = (updatedElements) => {
-    if (socket) {
-      const data = {
-        roomId: params.roomId,
-        userName: userName,
-        updatedElements: updatedElements,
-        canvasColor: canvasColor,
-      };
-      socket.emit("updateCanvas", data);
-    }
+    if (!socket) return;
+    const data = {
+      roomId: params.roomId,
+      userName: userName,
+      updatedElements: updatedElements,
+      canvasColor: canvasColor,
+    };
+    socket.emit("updateCanvas", data);
   };
 
   return (
