@@ -18,7 +18,9 @@ export default function Home({ params }) {
   const [isLive, setIsLive] = useState(false);
   const [messages, setMessages] = useState([]);
 
+  // Use your Render backend URL
   const server = process.env.NEXT_PUBLIC_SERVER_URL;
+
   const connectionOptions = {
     "force new connection": true,
     reconnectionAttempts: "Infinity",
@@ -35,6 +37,7 @@ export default function Home({ params }) {
     setIsLive(true);
     const socket = io(server, connectionOptions);
     setSocket(socket);
+
     socket.on("updateCanvas", (data) => {
       setElements(data.updatedElements);
       setCanvasColor(data.canvasColor);
@@ -44,9 +47,9 @@ export default function Home({ params }) {
       setMessages((messages) => [...messages, message]);
     });
 
-    // ping server every 2 min to prevent render server from sleeping
+    // ping server every 2 min to prevent Render server from sleeping
     socket.on("ping", () => {
-      settimeout(() => {
+      setTimeout(() => {
         socket.emit("pong");
       }, 120000);
     });
@@ -76,7 +79,6 @@ export default function Home({ params }) {
 
   const updateCanvas = (updatedElements) => {
     if (socket) {
-      // console.log(updatedElements);
       const data = {
         roomId: params.roomId,
         userName: userName,
